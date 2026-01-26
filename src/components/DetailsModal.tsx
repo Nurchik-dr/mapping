@@ -1,5 +1,20 @@
+import { extractString } from "../utils/extract";
+
 // src/components/DetailsModal.tsx
-const DetailsModal = ({ row, onClose }: { row: any; onClose: () => void }) => {
+const DetailsModal = ({
+  row,
+  mappingTitleKey,
+  mappedTitleKey,
+  onClose
+}: {
+  row: any;
+  mappingTitleKey: string;
+  mappedTitleKey: string;
+  onClose: () => void;
+}) => {
+  const expected = extractString(row, mappingTitleKey);
+  const actual = extractString(row, mappedTitleKey);
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
   <div className="modal-window" onClick={(e) => e.stopPropagation()}>
@@ -12,8 +27,8 @@ const DetailsModal = ({ row, onClose }: { row: any; onClose: () => void }) => {
     <div className="modal-section">
       <div className="section-title">Сравнение названий</div>
       <div className="compare-box">
-        <div><b>Ожидаемое:</b> {row.title}</div>
-        <div><b>Замапленное:</b> {row.matched_csv_title}</div>
+        <div><b>Ожидаемое:</b> {expected}</div>
+        <div><b>Замапленное:</b> {actual}</div>
         <small>norm: {row.__norm_expected} | {row.__norm_actual}</small>
         <div style={{marginTop: 6}}>
           {row.__match
@@ -21,6 +36,14 @@ const DetailsModal = ({ row, onClose }: { row: any; onClose: () => void }) => {
             : <span className="result-bad">Не совпало ✖</span>
           }
         </div>
+        {row.__suggested_title && (
+          <div className="suggested-box">
+            <div>
+              <b>Рекомендация:</b> {row.__suggested_title}
+            </div>
+            <small>score: {row.__suggested_score?.toFixed?.(2) ?? row.__suggested_score}</small>
+          </div>
+        )}
       </div>
     </div>
 
